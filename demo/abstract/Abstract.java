@@ -13,10 +13,7 @@ abstract class Animal {
 
 // 继承抽象类，必须要实现抽象类的抽象方法
 class Cat extends Animal {
-    
-
     // 实现父类的 scream
-
     public void scream() {
         // ***
         System.out.println("喵瞄叫");
