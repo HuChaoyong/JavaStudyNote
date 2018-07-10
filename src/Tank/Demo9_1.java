@@ -9,14 +9,14 @@ import java.awt.*;
 
 public class Demo9_1 extends JFrame{
 
-    MyPanel mp = null;
+    MyPanel1 mp = null;
 
     public static void main(String[] args) {
         Demo9_1 s = new Demo9_1();
     }
 
     public Demo9_1() {
-        mp = new MyPanel();
+        mp = new MyPanel1();
 
         this.add(mp);
         this.setSize(400, 300);
@@ -26,7 +26,7 @@ public class Demo9_1 extends JFrame{
 }
 
 // 定义一个MyPanel 用于绘图和显示绘图的区域
-class MyPanel extends JPanel {
+class MyPanel1 extends JPanel {
     // 只有panel 才能绘图
     // 覆盖  JPanel 的  paint 方法
 
