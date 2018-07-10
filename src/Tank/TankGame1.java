@@ -26,7 +26,7 @@ class MyPanel extends JPanel {
     Hero hero = null;
 
     public MyPanel() {
-        hero = new Hero(10, 100);
+        hero = new Hero(100, 100); // 我的坦克
     }
 
     // 重新paint
@@ -35,18 +35,18 @@ class MyPanel extends JPanel {
 
 	g.fillRect(0, 0, 400, 300);
 
-	this.drawTank(hero.getX(), hero.getY(), g, 0, 0);
+	this.drawTank(hero.getX(), hero.getY(), g, 0, 1);
     }
 
     public void drawTank(int x, int y, Graphics g,int direct, int type) {
 	// pan duan shi shenme lei xing de tan ke
 	switch(type){
 	    case 0:
-	 	g.setColor(Color.cyan);
-		break;
+            g.setColor(Color.cyan);
+            break;
 	    case 1:
-		g.setColor(Color.yellow);
-		break;
+            g.setColor(Color.yellow);
+            break;
 	}
 
 	switch(direct) {
