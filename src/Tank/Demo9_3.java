@@ -41,6 +41,13 @@ public class Demo9_3 extends JFrame implements ActionListener {
         jb1.addActionListener(this);
         jb2.addActionListener(this);
 
+        jb1.setActionCommand("black");
+        jb2.setActionCommand("red");
+
+        Cat little = new Cat();
+        jb1.addActionListener(little);
+        jb2.addActionListener(little);
+
         this.setSize(300, 200);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
@@ -49,9 +56,13 @@ public class Demo9_3 extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // 这个方法是 实现接口的
 
-        if (e.getActionCommand() == "黑色") {
+        // 等于要用   .equal
+
+
+
+        if (e.getActionCommand().equals("黑色")) {
             this.mp3.setBackground(Color.black);
-        } else if (e.getActionCommand() == "红色") {
+        } else if (e.getActionCommand().equals("红色")) {
             this.mp3.setBackground(Color.red);
         }
 
@@ -59,6 +70,16 @@ public class Demo9_3 extends JFrame implements ActionListener {
     }
 
 
+}
+
+class Cat implements  ActionListener {
+    public void actionPerformed(ActionEvent arg0) {
+        if (arg0.getActionCommand().equals("black")) {
+            System.out.println("猫酱也知道你按了 black 按键");
+        } else {
+            System.out.println("猫酱也知道你按了 red 按键");
+        }
+    }
 }
 
 //class MyPanel3 extends  JPanel {
