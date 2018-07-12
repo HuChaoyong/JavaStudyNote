@@ -31,6 +31,14 @@ public class Demo9_4 extends JFrame {
     }
 }
 
+/**
+ * 实现了接口，就能实现某些功能的监听
+ * 1. 实现接口 （KeyListener， MouseListener， ActionListener， WindowListener
+ * 2. 把接口的函数重新编写
+ * 3. 在事件源上注册监听 （这一步很重要
+ * 4. 事件传递靠的是 事件对象
+ */
+
 
 class MyPanel4 extends JPanel implements KeyListener {
 
