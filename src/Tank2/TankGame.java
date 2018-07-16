@@ -30,7 +30,7 @@ class MyPanel extends JPanel implements KeyListener {
 
     Hero hero = null;
 
-    // 定义敌人坦克数组
+    // 定义敌人坦克数组, 这里， 为了实现同步，线程安全， 必须采用 Vector， 而不能使用其他的
     Vector<EnemyTank> ets = new Vector<>();
     int enSize = 3;
 
