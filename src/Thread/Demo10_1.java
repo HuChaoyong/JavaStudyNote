@@ -19,7 +19,9 @@ public class Demo10_1 {
 //    cat.start();
 
         Dog dog = new Dog();
-        dog.run();
+
+        Thread t = new Thread(dog);
+        t.start();
     }
 }
 
