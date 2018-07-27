@@ -1,6 +1,6 @@
 # JavaStudyNote
 note for java base
 
-// 22讲, 集合 6:43
+// P42   48:11
 
 alt + insert => getter ,setter

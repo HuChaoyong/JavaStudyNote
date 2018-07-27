@@ -1,6 +1,5 @@
-package Tank5;
+package Tank6;
 
-// judge object will do by Thread, if it's change after it created.
 
 import java.util.Vector;
 
@@ -130,12 +129,71 @@ class Hero extends Tank {
 }
 
 // 敌方坦克
-class EnemyTank extends Tank {
+// upgrade enemy tank, support  Thread (it will run and shot )
+class EnemyTank extends Tank implements Runnable {
 
     boolean isLive = true;
 
     public EnemyTank(int x, int y) {
         super(x, y);
+    }
+
+    public void run() {
+
+        while (true) {
+
+            switch (this.direct) {
+                case 0: // enemy is going up
+                    for (int i = 0; i < 30; i++) {
+                        y -= speed;
+                        try {
+                            Thread.sleep(50);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                case 1: // enemy is going up
+                    for (int i = 0; i < 30; i++) {
+                        x += speed;
+                        try {
+                            Thread.sleep(50);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                case 2:
+                    for (int i = 0; i < 30; i++) {
+                        y += speed;
+                        try {
+                            Thread.sleep(50);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                case 3:
+                    for (int i = 0; i < 30; i++) {
+                        x -= speed;
+                        try {
+                            Thread.sleep(50);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+            }
+
+            // let it generate a new direction
+            this.direct = (int) (Math.random() * 4);
+
+            // judge enemy is live ?
+            if (!this.isLive) {
+                // tank dead, and go out of Thread.
+                break;
+            }
+        }
     }
 }
 

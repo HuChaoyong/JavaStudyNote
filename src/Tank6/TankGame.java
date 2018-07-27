@@ -1,10 +1,9 @@
-package Tank5;
+package Tank6;
 
 /**
- *  使用线程的注意事项.
- *   坦克能够发射多个子弹， 最多能发射5颗，
  *
- *   . add boom animation, (3 images)
+ * func:
+ *
  */
 
 
@@ -62,6 +61,9 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
         // 敌人的坦克
         for (int i = 0; i < enSize; i++) {
             EnemyTank et = new EnemyTank((i + 1) * 50, 0);
+            // start enemy. (Thread)
+            Thread t = new Thread(et);
+            t.start();
             et.setColor(0);
             et.setDirect(2);
             ets.add(et);
