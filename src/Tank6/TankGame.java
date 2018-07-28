@@ -67,9 +67,13 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
             et.setColor(0);
             et.setDirect(2);
             ets.add(et);
+
+            // 在敌方坦克创建时创建子弹
+            Shot s = new Shot(et.x + 10, et.y + 30, et.direct);
+            et.ss.add(s);
+            Thread t2 = new Thread(s);
+            t2.start();
         }
-
-
 
         // init images
         image1 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/1.png"));
@@ -90,7 +94,6 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
             }
 
             // 判断子弹 和 坦克 是否碰撞  2 层for 循环
-
             for (int i = 0; i < hero.ss.size(); i++) {
                 Shot tempShot = hero.ss.get(i);
                 // 判断子弹是否有效
@@ -105,6 +108,7 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
                     }
                 }
             }
+
 
             // 重绘
             this.repaint();
@@ -159,15 +163,21 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
             }
         }
 
-
-
-
-
         // 这里，不要用 恩Size， 使用 ets.size() 得到计算出来的坦克数量，坦克消失以后，数量就会改变
         for (int i = 0; i < ets.size(); i++) {
             EnemyTank t = ets.get(i);
             if (t.isLive) {
                 this.drawTank(t.getX(), t.getY(), g,  t.getDirect(), 0);
+
+                for (int j = 0; j < t.ss.size(); j++) {
+                    // 取出子弹
+                    Shot enemyShot = t.ss.get(j);
+                    if (enemyShot.isLive) {
+                        g.draw3DRect(enemyShot.x, enemyShot.y, 1, 1, false);
+                    } else {
+                        t.ss.remove(enemyShot);
+                    }
+                }
             }
         }
     }

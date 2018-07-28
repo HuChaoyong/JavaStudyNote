@@ -84,7 +84,6 @@ class Hero extends Tank {
     }
 
     // 发射子弹
-
     public void shotEnemy() {
 
         switch (this.direct) {
@@ -107,7 +106,6 @@ class Hero extends Tank {
 
         Thread t = new Thread(s);
         t.start();
-
     }
 
     // 坦克向上移动
@@ -132,7 +130,14 @@ class Hero extends Tank {
 // upgrade enemy tank, support  Thread (it will run and shot )
 class EnemyTank extends Tank implements Runnable {
 
+    int times = 0;
     boolean isLive = true;
+
+    // 定义一个 Vector 存放敌方坦克的子弹
+
+    Vector<Shot> ss = new Vector<Shot>();
+
+    // 敌方添加子弹， 应该在刚创建的时候创建 和 敌方子弹消亡后
 
     public EnemyTank(int x, int y) {
         super(x, y);
@@ -141,11 +146,13 @@ class EnemyTank extends Tank implements Runnable {
     public void run() {
 
         while (true) {
-
             switch (this.direct) {
                 case 0: // enemy is going up
                     for (int i = 0; i < 30; i++) {
-                        y -= speed;
+                        // 这里是判断坦克的行动范围，
+                        if (y > 0) {
+                            y -= speed;
+                        }
                         try {
                             Thread.sleep(50);
                         } catch (Exception e) {
@@ -155,7 +162,9 @@ class EnemyTank extends Tank implements Runnable {
                     break;
                 case 1: // enemy is going up
                     for (int i = 0; i < 30; i++) {
-                        x += speed;
+                        if (x < 400) {
+                            x += speed;
+                        }
                         try {
                             Thread.sleep(50);
                         } catch (Exception e) {
@@ -165,7 +174,9 @@ class EnemyTank extends Tank implements Runnable {
                     break;
                 case 2:
                     for (int i = 0; i < 30; i++) {
-                        y += speed;
+                        if (y < 300) {
+                            y += speed;
+                        }
                         try {
                             Thread.sleep(50);
                         } catch (Exception e) {
@@ -175,7 +186,9 @@ class EnemyTank extends Tank implements Runnable {
                     break;
                 case 3:
                     for (int i = 0; i < 30; i++) {
-                        x -= speed;
+                        if (x > 0) {
+                            x -= speed;
+                        }
                         try {
                             Thread.sleep(50);
                         } catch (Exception e) {
@@ -184,6 +197,34 @@ class EnemyTank extends Tank implements Runnable {
                     }
                     break;
             }
+
+            this.times ++;
+            if (times % 2 == 0 && isLive && ss.size() < 5) {
+                Shot s = null;
+                System.out.println("添加一次子弹");
+                // 敌方坦克没有子弹了
+                // 在这里添加子弹
+                switch (direct) {
+                    case 0:
+                        s = new Shot(x + 10, x, 0);
+                        break;
+                    case 1:
+                        s = new Shot(x + 30, x + 10, 1);
+                        break;
+                    case 2:
+                        s = new Shot(x + 10, x + 30, 2);
+                        break;
+                    case 3:
+                        s = new Shot(x , x + 10, 3);
+                        break;
+                }
+                ss.add(s);
+                // 启动子弹的线程
+                Thread t = new Thread(s);
+                t.start();
+            }
+
+            // 判断是否需要给坦克加入新的子弹
 
             // let it generate a new direction
             this.direct = (int) (Math.random() * 4);
