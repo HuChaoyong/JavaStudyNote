@@ -13,7 +13,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
+import javax.imageio.*;
 
 public class TankGame extends JFrame  {
     MyPanel mp = null;
@@ -76,11 +79,19 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
             Thread t2 = new Thread(s);
             t2.start();
         }
+        // 另一种加载图片的方式（Ubuntu 未成功
+        try {
+            image1 = ImageIO.read(new File("/media/disk1/JavaStudy/src/1.png"));
+            image2 = ImageIO.read(new File("/media/disk1/JavaStudy/src/2.png"));
+            image3 = ImageIO.read(new File("/media/disk1/JavaStudy/src/3.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // init images
-        image1 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/1.png"));
-        image2 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/2.png"));
-        image3 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/3.png"));
+//        image1 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/1.png"));
+//        image2 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/2.png"));
+//        image3 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/3.png"));
 
     }
 
