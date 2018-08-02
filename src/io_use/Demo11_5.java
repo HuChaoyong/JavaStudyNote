@@ -6,7 +6,7 @@ import java.io.*;
  */
 
 
-public class Demo12_5 {
+public class Demo11_5 {
 
     public static void main(String[] args) {
 
