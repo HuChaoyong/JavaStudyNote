@@ -7,6 +7,7 @@ package Tank8;
  *
  * 7 可以分关
  *     7.1 做一个开始的分关
+ *     7.2 闪烁效果
  */
 
 
@@ -22,18 +23,26 @@ import java.util.Vector;
 public class TankGame extends JFrame  {
     MyPanel mp = null;
 
+    //定义开始面板
+
+    MyStartPanel msp = null;
+
     public static void main(String[] args) {
         TankGame g1 = new TankGame();
     }
 
     public TankGame() {
-        mp = new MyPanel();
-        this.add(mp);
+//        mp = new MyPanel();
+//        this.add(mp);
+//
+//        Thread t = new Thread(mp);
+//        t.start();
+//        this.addKeyListener(mp);
 
-        Thread t = new Thread(mp);
+        msp = new MyStartPanel();
+        Thread t = new Thread(msp);
         t.start();
-
-        this.addKeyListener(mp);
+        this.add(msp);
         this.setSize(400, 300);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
@@ -43,14 +52,42 @@ public class TankGame extends JFrame  {
 }
 
 // 就是一个提示的作用，开始的面板
-class MyStartPanel extends JPanel {
+class MyStartPanel extends JPanel implements Runnable {
+
+    boolean show = true;
 
     public void paint(Graphics g) {
         super.paint(g);
 
+        // 绘制开始面板
         g.fillRect(0,0, 400, 300);
 
 
+        if (show) {
+            // 绘制关卡信息
+            g.setColor(Color.YELLOW);
+            // 开关信息的字体
+            Font myFont = new Font("楷体", Font.BOLD, 30);
+            g.setFont(myFont);
+            g.drawString("Stage: 1", 120, 110);
+        }
+
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            // 休眠
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            this.show = !this.show;
+
+            this.repaint();
+        }
     }
 }
 
@@ -125,7 +162,7 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
 
             this.hitEnemy();
 
-//            this.hitMe();
+            this.hitMe();
 
 //            this.preventCollision();
 
@@ -252,7 +289,7 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
             // 取出所有的子弹
             for (int j = 0; j < et.ss.size(); j++) {
                 Shot enemyShot = et.ss.get(j);
-                if (et.isLive) {
+                if (hero.isLive) {
                     this.hitTank(enemyShot, hero);
                 }
             }
