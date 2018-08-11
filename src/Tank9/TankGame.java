@@ -12,6 +12,10 @@ package Tank9;
  * 8  实现暂停和继续  没做
  *
  * 9  单写一个记录类，记录还剩多少坦克
+ *     9.1  用文件流
+ *     ９.2　　单写一个记录类，完成对玩家的记录
+ *     ９.3　　先完成保存共击毁多少辆坦克的功能
+ *     9.4　存盘退出，　（记录存盘退出时的所有坦克的坐标）
  */
 
 
@@ -38,6 +42,9 @@ public class TankGame extends JFrame implements ActionListener {
     // 开始游戏
     JMenu jm1 = null;
     JMenuItem jmi1 = null;
+    JMenuItem jmi2 = null;
+    JMenuItem jmi3 = null;
+    JMenuItem jmi4 = null;
 
     public static void main(String[] args) {
         TankGame g1 = new TankGame();
@@ -57,7 +64,25 @@ public class TankGame extends JFrame implements ActionListener {
         jmi1.setActionCommand("newGame");
         jmi1.setMnemonic('N');
 
+        jmi2 = new JMenuItem("退出游戏(E)");
+        jmi2.addActionListener(this);
+        jmi2.setActionCommand("Exit");
+        jmi2.setMnemonic('E');
+
+        jmi3 = new JMenuItem("存盘退出游戏(Ｃ)");
+        jmi3.addActionListener(this);
+        jmi3.setActionCommand("saveExit");
+        jmi3.setMnemonic('S');
+
+        jmi4 = new JMenuItem("续上局游戏(Ｓ)");
+        jmi4.addActionListener(this);
+        jmi4.setActionCommand("continue");
+        jmi4.setMnemonic('L');
+
         jm1.add(jmi1);
+        jm1.add(jmi2);
+        jm1.add(jmi3);
+        jm1.add(jmi4);
         jmb.add(jm1);
 
         msp = new MyStartPanel();
@@ -77,6 +102,35 @@ public class TankGame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("newGame") ){
             mp = new MyPanel();
+            // 先移除旧的面板 就是，开始面板
+            this.remove(msp);
+            // 然后，再把游戏开始面板加进去
+            this.add(mp);
+            Thread t = new Thread(mp);
+            t.start();
+
+            this.addKeyListener(mp);
+            // 显示， 刷新 JFrame
+            this.setVisible(true);
+        } else if (e.getActionCommand().equals("Exit")) {
+            //　用户点击了退出系统，　
+            // 退出前，先保存数据
+
+            Recorder.keepRecording();
+
+            System.exit(0);
+        } else if (e.getActionCommand().equals("saveExit")) {
+            // 保存我方坦克的数量和坐标
+
+            //　保存敌方坦克的位置和数量
+            Recorder.setEts(mp.ets);
+            Recorder.keepRecAndEnemyTank();
+            // 退出
+            System.exit(0);
+        } else if (e.getActionCommand().equals("continue")) {
+
+            //　继续存档的游戏
+            mp = new MyPanel(Recorder.getNodesAndEnNums());
             // 先移除旧的面板 就是，开始面板
             this.remove(msp);
             // 然后，再把游戏开始面板加进去
@@ -152,6 +206,11 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
 
     // constructor function
     public MyPanel() {
+
+        // 恢复记录
+
+        Recorder.getRecording();
+
         // 我的坦克
         hero = new Hero(100, 100);
 
@@ -164,7 +223,6 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
             et.setColor(0);
             et.setDirect(2);
             ets.add(et);
-
 
             // 将mypanel的所有敌人坦克，交给该坦克
             et.setEts(ets);
@@ -188,6 +246,44 @@ class MyPanel extends JPanel implements KeyListener, Runnable {
 //        image1 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/1.png"));
 //        image2 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/2.png"));
 //        image3 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/3.png"));
+    }
+
+    public MyPanel(Vector<Node> nodes) {
+        // 恢复记录
+
+        Recorder.getRecording();
+
+        // 我的坦克
+        hero = new Hero(100, 100);
+
+        // 敌人的坦克
+        for (int i = 0; i < nodes.size(); i++) {
+            Node node = nodes.get(i);
+            EnemyTank et = new EnemyTank(node.x, node.y);
+            // start enemy. (Thread)
+            Thread t = new Thread(et);
+            t.start();
+            et.setColor(0);
+            et.setDirect(node.direct);
+            ets.add(et);
+
+            // 将mypanel的所有敌人坦克，交给该坦克
+            et.setEts(ets);
+
+            // 在敌方坦克创建时创建子弹
+            Shot s = new Shot(et.x + 10, et.y + 30, et.direct);
+            et.ss.add(s);
+            Thread t2 = new Thread(s);
+            t2.start();
+        }
+        // 另一种加载图片的方式（Ubuntu 未成功
+        try {
+            image1 = ImageIO.read(new File("/media/disk1/JavaStudy/src/1.png"));
+            image2 = ImageIO.read(new File("/media/disk1/JavaStudy/src/2.png"));
+            image3 = ImageIO.read(new File("/media/disk1/JavaStudy/src/3.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

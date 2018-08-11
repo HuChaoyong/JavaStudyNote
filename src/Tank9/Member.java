@@ -1,7 +1,9 @@
 package Tank9;
 
 
+import java.io.FileWriter;
 import java.util.Vector;
+import java.io.*;
 
 // 坦克类
 class Tank {
@@ -481,6 +483,20 @@ class Shot implements Runnable {
     }
 }
 
+//　坦克节点信息，　用于恢复坦克和存储坦克
+
+class Node {
+    int x;
+    int y;
+    int direct;
+
+    public Node(String[] xyz) {
+        this.x = Integer.parseInt(xyz[0]);
+        this.y = Integer.parseInt(xyz[1]);
+        this.direct = Integer.parseInt(xyz[2]);
+    }
+}
+
 // 记录类
 
 class Recorder {
@@ -489,9 +505,123 @@ class Recorder {
     // 我有多少可用生命
     private static int myLife = 3;
 
-
     //　记录击毁的敌方坦克数量
     private static int destroyEnNum = 0;
+
+    private static  FileWriter fw = null;
+
+    private static BufferedWriter bw = null;
+
+    private  static  FileReader fr = null;
+
+    private static BufferedReader br = null;
+
+    private static Vector<EnemyTank> ets = new Vector<EnemyTank>();
+
+    private static Vector<Node> nodes = new Vector<Node>();
+
+    //　读取存储的坦克信息
+
+    public static Vector<Node> getNodesAndEnNums() {
+        try {
+            fr = new FileReader("/home/hcy/Desktop/a.txt");
+            br = new BufferedReader(fr);
+            String n = br.readLine().trim();
+            destroyEnNum = Integer.parseInt(n);
+
+            while ((n=br.readLine()) != null) {
+                String[] xyz = n.split(" ");
+                nodes.add(new Node(xyz));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return  nodes;
+        }
+    }
+
+    /**
+     * 把玩家击毁的敌坦克数量保存到文件中
+     */
+    public static void keepRecording() {
+        //　创建文件流
+        try {
+            // 创建文件，位于
+            fw = new FileWriter("/home/hcy/Desktop/a.txt");
+            bw = new BufferedWriter(fw);
+
+            bw.write(destroyEnNum + " \r\n");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bw.close();
+                fw.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void keepRecAndEnemyTank() {
+        //　创建文件流
+        try {
+            // 创建文件，位于
+            fw = new FileWriter("/home/hcy/Desktop/a.txt");
+            bw = new BufferedWriter(fw);
+            bw.write(destroyEnNum + " \r\n");
+
+            // 保存敌方活的坦克的坐标和方向
+            for (int i = 0; i < ets.size(); i++) {
+                // 取出坦克
+                EnemyTank et = ets.get(i);
+                if (et.isLive) {
+                    // 判断敌方坦克是否生存着
+                    String record = et.x + " " + et.y + " " + et.direct;
+
+                    // 写入到文件
+                    bw.write(record + "\r\n");
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bw.close();
+                fw.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //　从文件中读取 被销毁的坦克数量
+    public static void getRecording() {
+        try {
+            fr = new FileReader("/home/hcy/Desktop/a.txt");
+            br = new BufferedReader(fr);
+            String n = br.readLine();
+            n = n.trim();
+            int b = 1;
+            destroyEnNum = Integer.parseInt(n);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static int getDestroyEnNum() {
         return destroyEnNum;
@@ -501,7 +631,13 @@ class Recorder {
         Recorder.destroyEnNum = destroyEnNum;
     }
 
+    public static Vector<EnemyTank> getEts() {
+        return ets;
+    }
 
+    public static void setEts(Vector<EnemyTank> ets) {
+        Recorder.ets = ets;
+    }
 
     public static int getEnNum() {
         return enNum;
@@ -529,9 +665,6 @@ class Recorder {
     public static  void reduceMyLife() {
         myLife --;
     }
-
-
-//    public void reduce
 
 }
 
